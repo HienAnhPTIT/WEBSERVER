@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <script type="module" src="../diagram.js"></script>
+    <script>
+        let selectedNode = 0;
+        var socket = io("http://localhost:5000");
+    </script>
+    <div class="container-fluid ">
+        <div class="row mt-2" id="block1">
+            <div class="col-md-10">
+                <div class="border border-dark rounded bg-info mx-1 my-2 ">
+                    <h5>Học viện Công nghệ Bưu Chính Viễn Thông PTIT</h5>
+                    <h5>IOT DASH BOARD</h5>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="border border-dark rounded mx-1 my-2 btn btn-info py-1 text-light" >
+                    <a class="text-light" href="/history?node=1" target="_blank" id="his_node1" style="display: inline; text-decoration: none;" >
+                        <button class="btn btn-info"><p>Lịch sử đo node 1</p></button>
+                    </a>
+                    <a class="text-light" href="/history?node=2" target="_blank"  id="his_node2" style="display: none; text-decoration: none;" >
+                        <button class="btn btn-info"><p>Lịch sử đo node 2</p></button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="block2">
+            <div class="col border border-dark rounded">
+                <div class="border border-dark rounded bg-info mx-1 my-2 text-center">
+                    <p></p>
+                    <p></p>
+                    <h1>Dữ liệu cảm biến</h1>
+                    <p></p>
+                    <p></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="block3">
+            <div class="col-md-3 border border-dark rounded" id="data1">
+                <div class="border border-dark rounded bg-info mx-1 my-2 text-center d-flex flex-column align-items-center">
+                    <h5>Nhiệt độ</h5>
+                    <h5>dữ liệu nhiệt độ</h5>
+                    <h5 id="temp">'data'</h5>
+                </div>
+            </div>
+            <div class="col-md-3 border border-dark rounded" id="data2">
+                <div class="border border-dark rounded bg-info mx-1 my-2 text-center d-flex flex-column align-items-center">
+                    <h5>Độ ẩm</h5>
+                    <h5>dữ liệu độ ẩm</h5>
+                    <h5 id="humid">'data'</h5>
+                </div>
+            </div>
+            <div class="col-md-3 border border-dark rounded" id="data3">
+                <div class="border border-dark rounded bg-info mx-1 my-2 text-center d-flex flex-column align-items-center">
+                    <h5>Ánh sáng</h5>
+                    <h5>dữ liệu ánh sáng</h5>
+                    <h5 id="light">'data'</h5>
+                </div>
+            </div>
+            <div class="col-md-3 border border-dark rounded" id="data4">
+                <div class="border border-dark rounded bg-info mx-1 my-2 text-center d-flex flex-column align-items-center">
+                    <h5>Khói bụi</h5>
+                    <h5>dữ liệu khói bụi</h5>
+                    <h5 id="dust">'data'</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="row border border-dark rounded" id="block4">
+            <div class="col-md-6 border border-dark rounded" id="chart">
+                <div class="border border-dark rounded bg-white mx-1 my-2">
+                    <div class="Bieu-do">
+                        <script src="https://code.highcharts.com/highcharts.js"></script>
+                        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+                        <script src="https://code.highcharts.com/modules/export-data.js"></script>
+                        <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    
+                        <figure class="highcharts-figure">
+                            <div id="container"></div>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 border border-dark rounded " id="block5">
+                <div class="row ">
+                    <div class="col-12 h-33 w-100 border border-dark rounded" id="data5">
+                        <div class="border border-dark rounded bg-info my-2 mx-1 text-center d-flex flex-column align-items-center">
+                            <h5>RSSI</h5>
+                            <h5>dữ liệu RSSI</h5>
+                            <h5 id="rssi">'data'</h5>
+                        </div>
+                    </div>
+                    <div class="col-12 h-33 w-100 border border-dark rounded" id="data6">
+                        <div class="border border-dark rounded bg-info mx-1 my-2  text-center d-flex flex-column align-items-center">
+                            <h5>SNR</h5>
+                            <h5>dữ liệu SNR</h5>
+                            <h5 id="snr">'data'</h5>
+                        </div>
+                    </div>
+                    <div class="col-12 h-33 w-100 border border-dark rounded" id="button">
+                        <div class="border border-dark rounded bg-info mx-1 my-2">
+                            <!-- //??// -->
+                            <div class="btn first text-white button">
+                                <h2>Công tắc</h2>
+                                <img id="myImage2" src="./imgs/img-3.png" style="width:120px" alt="">
+                                <div class="bieudonnn">
+                                    <dr></dr>
+                                    <div class="container">
+                                        <div class="toggle">
+                                            <div class="toggle-button" id="togglechange" ></div>
+                                        </div>
+                                        <div class="text">OFF</div>
+                                    </div>
+                                    <script>
+                                        
+                                        let toggle = document.querySelector(".toggle");
+                                        let text = document.querySelector(".text");
+                                        const toggle2 = document.getElementById("togglechange");
+                                        const divchange = document.querySelector("#div-btnb");
+                                        const myImages2 = document.getElementById("myImage2");
+                                        function Animatedtoggle() {
+                                            toggle.classList.toggle("active");                                   
+                                        }
+                                        toggle2.addEventListener('click', function (event) {    
+                                            //alert("Dang lua chon node:" + selectedNode); 
+                                            let a = confirm("Đảo trạng thái đèn ?");
+                                            if (a == true) {
+                                                Animatedtoggle();
+                                                if (toggle.classList.contains("active")) {
+                                                    text.innerHTML = "ON";
+                                                    if(selectedNode == 1) {
+                                                        socket.emit("buttonClickON1", "on");
+                                                    } else {
+                                                        socket.emit("buttonClickON2", "on");
+                                                    }
+                                                    
+                                                    //divchange.style.backgroundColor = "#9B59B6";
+                                                    //myImages2.src = "./imgs/img-3.png";
+                                                }
+                                                else {
+                                                    text.innerHTML = "OFF";
+                                                    //socket.emit("button2", "off");
+                                                    //myImages2.src = "./imgs/img-4.png";
+                                                    //divchange.style.backgroundColor = "#78209b";
+                                                    if(selectedNode == 1) {
+                                                        socket.emit("buttonClickOFF1", "off");
+                                                    } else {
+                                                        socket.emit("buttonClickOFF2", "off");
+                                                    }
+                                                    
+                                                }
+                                            } else {
+                                                event.preventDefault();
+                                                return;
+                                            }
+                                        })
+                                    </script>
+                                </div>
+                            </div>
+                            <!-- //??// -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3  border border-dark rounded " id="block6">
+                <div class="row">
+                    <div class="col-12 border border-dark rounded" id="node3">
+                        <div class="border border-dark rounded bg-info mx-1 my-2 text-center d-flex flex-column align-items-center py-2">
+                            <h2>Lựa chọn Node</h2>
+                            <input type="hidden" id="selectedNode"/>
+                        </div>
+                    </div>
+                    <div class="col-12 vh-33border border-dark rounded" id="node1">
+                        <div class="border border-dark rounded bg-info mx-1 my-2 text-center d-flex flex-column align-items-center py-2">
+                            <h5>Node 1</h5>
+                            <h5 id="devEui1">DEVUI</h5>
+                            <input type="button" onclick="node(1)" value="Node 1"/>
+                        </div>
+                    </div>
+                    <div class="col-12 vh-33 border border-dark rounded" id="node2">
+                        <div class="border border-dark rounded bg-info mx-1 my-2 text-center d-flex flex-column align-items-center">
+                            <h5>Node 2</h5>
+                            <h5 id="devEui2">DEVUI</h5>
+                            <input type="button" onclick="node(2)" value="Node 2"/>
+                        </div>
+                    </div>
+                    <div class="col-12 vh-33 border border-dark rounded" id="node3">
+                        <div class="border border-dark rounded bg-info mx-1 my-2 text-center d-flex flex-column align-items-center">
+                            <h2>Add Node</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <script>
+        let myInterval1 = null;
+        let myInterval2 = null;
+        function node(number) {
+            selectedNode = number;
+            $("#selectedNode").val(selectedNode);
+            getdata(number);
+            if(number == 1) {
+                $("#his_node1").show();
+                $("#his_node2").hide();
+                clearInterval(myInterval2);
+                myInterval1 = setInterval(getdata, 10000, number);               
+            } else {
+                $("#his_node2").show();
+                $("#his_node1").hide();
+                clearInterval(myInterval1);
+                myInterval2 = setInterval(getdata, 10000, number);                
+            }         
+            // doi lai trang thai den ve OFF
+            // let text = document.querySelector(".text");
+            // text.innerHTML = "OFF";
+            // let toggle = document.querySelector(".toggle");
+            // toggle.classList.remove("active");
+        }
+
+
+        function getdata(number) {
+            $.ajax({ 
+                type: 'GET', 
+                url: 'getData', 
+                data: { node: number}, 
+                dataType: 'json',
+                success: function (data) { 
+                    if(data.length == 0) {
+                        alert("Khong co du lieu");
+                        $("#devEui1").html("");
+                        $("#devEui2").html("");                       
+                        $("#temp").html("");
+                        $("#humid").html("");
+                        $("#light").html("");
+                        $("#dust").html("");
+                        $("#rssi").html("");     
+                        $("#snr").html("");     
+
+                    }
+                    $.each(data, function(index, element) {
+                       console.log(element);
+                       console.log(element.devEui);
+                       if(number == 1) {
+                            $("#devEui1").html(element.devEui + " - " + element.timestamp);
+                            $("#devEui2").html("");
+                       } else {
+                            $("#devEui1").html("");
+                            $("#devEui2").html(element.devEui + " - " + element.timestamp);
+                       }
+                       
+                       $("#temp").html(element.temp);
+                       $("#humid").html(element.humid);
+                       $("#light").html(element.light);
+                       $("#dust").html(element.dust);
+                       $("#rssi").html(element.rssi);     
+                       $("#snr").html(element.snr);                     
+                    });
+                },
+                error: function (data) { 
+                    console.log("1111");
+                    console.log(data);
+                }
+            });
+        }
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+    <h1>History Page</h1>
+    <p>Node: <span id="node"><%= node  %></span></p>
+    <p id="data"></p>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script>
+        //let arrayCollum = [];
+        function getFullData(number) {
+            $.ajax({ 
+                type: 'GET', 
+                url: '../getFullData', 
+                data: { node: number}, 
+                dataType: 'json',
+                success: function (data) { 
+                    //$("#data").html(JSON.stringify(data));
+
+                    let jsonData = data;
+                        console.log(jsonData);
+
+                        // Get the container element where the table will be inserted
+                        let container = $("#data");
+                        container.empty();
+
+                        // Create the table element
+                        let table = $("<table class='table table-striped table-hover' id='tbl_exporttable_to_xls' >");
+
+                        // Get the keys (column names) of the first object in the JSON data
+                        let cols = Object.keys(jsonData[0]);
+
+                        // Create the header element
+                        let thead = $("<thead class='thead-dark'>");
+                        let tr = $("<tr>");
+
+                        // Loop through the column names and create header cells
+                        $.each(cols, function (i, item) {
+                            let th = $("<th>");
+                            th.text(item); // Set the column name as the text of the header cell
+                            tr.append(th); // Append the header cell to the header row
+                        });
+                        thead.append(tr); // Append the header row to the header
+                        table.append(thead) // Append the header to the table
+
+                        let tbody = $("<tbody>");
+                        // Loop through the JSON data and create table rows
+                        $.each(jsonData, function (i, item) {
+                            let tr = $("<tr>");
+
+                            // Get the values of the current object in the JSON data
+                            let vals = Object.values(item);
+
+                            // Loop through the values and create table cells
+                            $.each(vals, (i, elem) => {
+                                let td = $("<td>");
+                                td.text(elem); // Set the value as the text of the table cell
+                                tr.append(td); // Append the table cell to the table row
+                            });
+                            tbody.append(tr); // Append the table row to the table
+                        });
+                        table.append(tbody)
+                        container.append(table)
+                },
+                error: function (data) { 
+                    console.log("1111");
+                    console.log(data);
+                }
+            });
+        }
+        let node = $("#node").html();
+        getFullData(node);
+
+
+        function getLastestdata(number) {
+            $.ajax({ 
+                type: 'GET', 
+                url: 'getData', 
+                data: { node: number}, 
+                dataType: 'json',
+                success: function (data) { 
+                    if(data.length == 0) {  
+
+                    } else {
+                        let tbody = $("#tbl_exporttable_to_xls > tbody");
+
+                        let tr = $("<tr>");
+
+                        // Get the values of the current object in the JSON data
+                        let vals = Object.values(data[0]);
+
+                        // Loop through the values and create table cells
+                        $.each(vals, (i, elem) => {
+                            let td = $("<td>");
+                            td.text(elem); // Set the value as the text of the table cell
+                            tr.append(td); // Append the table cell to the table row
+                        });
+                        tbody.prepend(tr); 
+                    }
+                },
+                error: function (data) { 
+                    console.log("1111");
+                    console.log(data);
+                }
+            });
+        }
+        //getLastestdata(node);
+        setInterval(getLastestdata, 10000, node);   
+    </script>
+</body>
+</html>
